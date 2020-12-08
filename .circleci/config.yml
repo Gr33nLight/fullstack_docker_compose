@@ -1,0 +1,16 @@
+version: 2.1
+jobs:
+  one:
+    docker:
+      - image: circleci/node
+    working_directory: ~/app/api
+    steps:
+      - checkout:
+          path: ~/app
+      - run: yarn install
+      - run: yarn test
+workflows:
+  version: 2
+  main:
+    jobs:
+      - one

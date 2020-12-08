@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  proxy:
+    depends_on:
+      - client
+      - api
+    restart: always
+    build: ./proxy
+    ports:
+      - '80:80'
+    container_name: proxy
+  api:
+    build: ./api
+    environment:
+      - DEBUG=${DEBUG}
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    restart: on-failure
+    links:
+      - db
+    container_name: api
+  client:
+    build: ./client
+    environment:
+      - DEBUG="${DEBUG}"
+    restart: on-failure
+    container_name: client
+  db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodata:/data/db
+    container_name: db
+
+volumes:
+  mongodata:
